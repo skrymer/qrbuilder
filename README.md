@@ -12,4 +12,5 @@ BufferedImage qrcode = sut.newQRCode()
                           .withImageOverlay(ImageIO.read(new File("/path/to/overlay/overlay.png")))
                           .withOverlayRatio(0.25f)
                           .withOverlayTransparency(1.0f)
-                          .create();```
+                          .create();
+```
