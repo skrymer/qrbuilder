@@ -15,6 +15,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.Result;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import com.skrymer.qrbuilder.ZXingQRCodeBuilder;
 import com.skrymer.qrbuilder.exception.InvalidSizeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
 
@@ -31,24 +32,29 @@ public class QRCodeBuilderTest {
     sut = new ZXingQRCodeBuilder();
   }
   
-  @Test(timeOut=500)
+  @Test(timeOut=500, invocationCount=10, successPercentage=95)
   public void testBuildQRCode_noOverlay_sucess() throws Exception {
     BufferedImage qrcode = sut.newQRCode()
     						  .withSize(EXPECTED_QRCODE_WIDTH, EXPECTED_QRCODE_HEIGHT)
+    						    .and()
 	                          .withData(EXPTECTED_QRCODE_DATA)
 	                          .create();
     
     assertQRCode(qrcode);
   }
 
-  @Test(timeOut=500)
+  @Test(timeOut=500, invocationCount=10, successPercentage=95)
   public void testBuildQRCode_withImageOverlay_sucess() throws Exception {
     BufferedImage qrcode = sut.newQRCode()
     						  .withSize(EXPECTED_QRCODE_WIDTH, EXPECTED_QRCODE_HEIGHT)
+    						  	.and()
                               .withData(EXPTECTED_QRCODE_DATA)
+                              	.and()
                               .withImageOverlay(getOverlay())
+                              	.and()
                               .withOverlayRatio(0.25f)
-                              .withOverlayTransparency(1.0f)
+                              	.and()
+                              .withOverlayTransparencyOf(1.0f)
                               .create();
         
     assertQRCode(qrcode);
@@ -58,6 +64,7 @@ public class QRCodeBuilderTest {
   public void testBuildQRCode_widthIsZero_throwCouldNotCreateQRCodeException(){
     sut.newQRCode()
        .withSize(0, 1)
+         .and()
        .withData(EXPTECTED_QRCODE_DATA)
        .create();
   }
@@ -66,6 +73,7 @@ public class QRCodeBuilderTest {
   public void testBuildQRCode_heightIsZero_throwCouldNotCreateQRCodeException(){
     sut.newQRCode()
        .withSize(1, 0)
+         .and()
        .withData(EXPTECTED_QRCODE_DATA)
        .create();
   }
@@ -74,8 +82,11 @@ public class QRCodeBuilderTest {
   public void testBuildQRCode_overlayToBig_throwUnreadableDataException() throws Exception {
     sut.newQRCode()
        .withSize(250, 250)
+         .and()
        .withData(EXPTECTED_QRCODE_DATA)
+         .and()
        .withImageOverlay(getOverlay())
+         .and()
        .withOverlayRatio(0.35f)
        .create();
   }

@@ -42,6 +42,14 @@ public class ZXingQRCodeBuilder {
   }
   
   /**
+   * Syntactic sugar - qrbuilder.newQRCode().with().and().with()
+   * @return
+   */
+  public ZXingQRCodeBuilder and(){
+	  return this;
+  }
+  
+  /**
    * @param overlay - Specifies a image overlay
    * @return
    *    this
@@ -73,7 +81,7 @@ public class ZXingQRCodeBuilder {
    *    Default is set to 1
    * @return
    */
-  public ZXingQRCodeBuilder withOverlayTransparency(Float value){
+  public ZXingQRCodeBuilder withOverlayTransparencyOf(Float value){
     this.overlayTransparencyValue = value;
     
     return this;
