@@ -18,7 +18,7 @@ public class ImageOverlay implements QRCodeDecorator {
   private Float overlayToQRCodeRatio, overlayTransparency;
 
   /**
-   * @param overlay - the image to be over layed ontop of the qrcode
+   * @param overlay - the image to be over rendered on top of the qrcode
    *
    * @param overlayToQRCodeRatio - Specifies the ratio between the overlay image and the QRCode in percentage like 0.20 = 20%.
    *                               Overlays should as a guide not take up more 25% of the QRCode or else the readability of the code could be compromised
@@ -26,6 +26,7 @@ public class ImageOverlay implements QRCodeDecorator {
    *
    * @param overlayTransparency - the overlays transparency from 0..1 where one is no transparency.
    *                              Default is set to 1
+   *                              It's safe to add a overlay that takes up more than 25%, if the transparency is less than .20
    *
    * @throws IllegalArgumentException - if the overlay is null
    */
