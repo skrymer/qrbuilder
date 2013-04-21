@@ -31,5 +31,6 @@ public class Main {
   }
 }
 ```
+![alt text](https://raw.github.com/wiki/skrymer/qrbuilder/images/qrcode.png "Concept")
 
 The builder uses decorators to decorate the generated QRCode. Currently there is only to decorators namly ImageOverlay to add a overlay and ColoredQRCode which colors the qrcode
