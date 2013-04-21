@@ -11,8 +11,12 @@ public class ColoredQRCode implements QRCodeDecorator {
   /**
    * @param color
    */
-  public ColoredQRCode(Color color) {
+  private ColoredQRCode(Color color) {
     this.color = color;
+  }
+
+  public static QRCodeDecorator colorizeQRCode(Color color){
+   return new ColoredQRCode(color);
   }
 
   public BufferedImage decorate(BufferedImage qrcode) {

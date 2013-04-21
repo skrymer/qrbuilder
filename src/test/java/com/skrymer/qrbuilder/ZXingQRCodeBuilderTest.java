@@ -1,28 +1,26 @@
 package com.skrymer.qrbuilder;
 
-import static org.testng.Assert.*;
+import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.Result;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
+import com.google.zxing.qrcode.QRCodeReader;
+import com.skrymer.qrbuilder.exception.InvalidSizeException;
+import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.Test;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.imageio.ImageIO;
-
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.qrcode.QRCodeReader;
-import com.skrymer.qrbuilder.decorator.ColoredQRCode;
-import com.skrymer.qrbuilder.decorator.ImageOverlay;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
-
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
-import com.skrymer.qrbuilder.exception.InvalidSizeException;
-import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
+import static com.skrymer.qrbuilder.decorator.ImageOverlay.addImageOverlay;
+import static org.testng.Assert.assertEquals;
 
 @Test
 public class ZXingQRCodeBuilderTest {
@@ -55,7 +53,7 @@ public class ZXingQRCodeBuilderTest {
                                 .and()
                               .withData(EXPTECTED_QRCODE_DATA)
                                 .and()
-                              .decorate(new ImageOverlay(getOverlay(), 1.0f, 0.25f))
+                              .decorate(addImageOverlay(getOverlay(), 1.0f, 0.25f))
                               .create();
 
     assertQRCode(qrcode);
@@ -68,9 +66,7 @@ public class ZXingQRCodeBuilderTest {
                                 .and()
                               .withData(EXPTECTED_QRCODE_DATA)
                                 .and()
-                              .decorate(new ColoredQRCode(Color.RED))
-                               .and()
-                              .verifyQRCode(false)
+                              .decorate(colorizeQRCode(Color.RED))
                               .create();
 
     assertQRCode(qrcode);
@@ -101,7 +97,7 @@ public class ZXingQRCodeBuilderTest {
          .and()
        .withData(EXPTECTED_QRCODE_DATA)
          .and()
-       .decorate(new ImageOverlay(getOverlay(), 1.0f, 0.35f))
+       .decorate(addImageOverlay(getOverlay(), 1.0f, 0.35f))
        .create();
   }
 		

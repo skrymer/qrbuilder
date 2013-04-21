@@ -29,7 +29,7 @@ public class ImageOverlay implements QRCodeDecorator {
    *
    * @throws IllegalArgumentException - if the overlay is null
    */
-  public ImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
+  private ImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
     if(overlay == null)
       throw new IllegalArgumentException("Overlay is required");
 
@@ -48,6 +48,10 @@ public class ImageOverlay implements QRCodeDecorator {
     else {
       this.overlayToQRCodeRatio = overlayToQRCodeRatio;
     }
+  }
+
+  public static QRCodeDecorator addImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
+    return new ImageOverlay(overlay, overlayTransparency, overlayToQRCodeRatio);
   }
 
   public BufferedImage decorate(BufferedImage qrcode) {
