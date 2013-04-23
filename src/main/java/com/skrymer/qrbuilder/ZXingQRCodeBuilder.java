@@ -1,6 +1,8 @@
 package com.skrymer.qrbuilder;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,8 +21,9 @@ import com.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException;
 import com.skrymer.qrbuilder.exception.InvalidSizeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
 
-public class ZXingQRCodeBuilder implements QRCBuilder {
+import javax.imageio.ImageIO;
 
+public class ZXingQRCodeBuilder implements QRCBuilder {
   private String data;
   private Boolean verify;
   private Integer width, height;
@@ -38,7 +41,7 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
 	  return this;
   }
 
-  public QRCBuilder verifyQRCode(Boolean doVerify){
+  public QRCBuilder doVerify(Boolean doVerify){
     this.verify = doVerify;
 
     return this;
@@ -69,31 +72,27 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
     return this;
   }
 
-  public BufferedImage create() throws CouldNotCreateQRCodeException, UnreadableDataException {
-    BufferedImage qrcode;
-    
-    try {          
-      BitMatrix matrix = new QRCodeWriter().encode(data,BarcodeFormat.QR_CODE, this.width, this.height, getEncodeHints());
-
-      qrcode = MatrixToImageWriter.toBufferedImage(matrix);
-    }
-    catch (Exception e) {
-      throw new CouldNotCreateQRCodeException("QRCode could not be generated", e.getCause());
-    }
-
-    if(decorators != null){
-      for(QRCodeDecorator decorator : decorators){
-        qrcode = decorator.decorate(qrcode);
-      }
-    }
-
-    if(verify){
-      verifyQRCode(qrcode);
-    }
+  public BufferedImage toBufferedImage() throws CouldNotCreateQRCodeException, UnreadableDataException {
+    BufferedImage qrcode = encode();
+    qrcode = decorate(qrcode);
+    verifyQRCode(qrcode);
 
     return qrcode;
   }
 
+  public File toFile(String fileName, String fileFormat) throws CouldNotCreateQRCodeException, UnreadableDataException, IOException {
+    if(fileName == null || fileName.isEmpty())
+      throw new IllegalArgumentException("File name should to be specified");
+
+    if(fileFormat == null || fileFormat.isEmpty())
+      throw new IllegalArgumentException("File format should be specified");
+
+    File imageFile = new File(fileName);
+
+    ImageIO.write(toBufferedImage(), fileFormat, imageFile);
+
+    return imageFile;
+  }
 
 //--------------------
 // private methods
@@ -108,42 +107,65 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
   }
   
   private void verifyQRCode(BufferedImage qrcode){
-    try{
-      BinaryBitmap binaryBitmap = new BinaryBitmap(
-                                    new HybridBinarizer(
-                                      new BufferedImageLuminanceSource(qrcode)));
+    if(verify){
+      try{
+        BinaryBitmap binaryBitmap = new BinaryBitmap(
+                                      new HybridBinarizer(
+                                        new BufferedImageLuminanceSource(qrcode)));
 
-      Result readData = new QRCodeReader().decode(binaryBitmap, getDecodeHints());
-      
-      if(! readData.getText().equals(this.data)){
-        throw new UnreadableDataException("The data contained in the qrcode is not the same as the given value");
+        Result readData = new QRCodeReader().decode(binaryBitmap, getDecodeHints());
+
+        if(! readData.getText().equals(this.data)){
+          throw new UnreadableDataException("The data contained in the qrcode is as expected: " + this.data + " actual: " + readData);
+        }
       }
-    }
-    catch(NotFoundException nfe){
-      throw new UnreadableDataException("The data contained in the qrcode is not readable", nfe);
-    }
-    catch (ChecksumException ce) {
-      throw new UnreadableDataException("The data contained in the qrcode is not readable", ce);
-    }
-    catch (FormatException fe) {
-      throw new UnreadableDataException("The data contained in the qrcode is not readable", fe);
+      catch(NotFoundException nfe){
+        throw new UnreadableDataException("The data contained in the qrcode is not readable", nfe);
+      }
+      catch (ChecksumException ce) {
+        throw new UnreadableDataException("The data contained in the qrcode is not readable", ce);
+      }
+      catch (FormatException fe) {
+        throw new UnreadableDataException("The data contained in the qrcode is not readable", fe);
+      }
     }
   }
 
   private Map<EncodeHintType, Object> getEncodeHints() {
     Map<EncodeHintType,  Object> encodeHints = new HashMap<EncodeHintType,  Object>();
     encodeHints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.H);
-    encodeHints.put(EncodeHintType.CHARACTER_SET, "utf-8");
 
     return encodeHints;
   }
 
   private Map<DecodeHintType, Object> getDecodeHints(){
     Map<DecodeHintType, Object> decodeHints = new HashMap<DecodeHintType, Object>();
-    decodeHints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-    decodeHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+    decodeHints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 
     return decodeHints;
   }
 
+  private BufferedImage encode() {
+    BufferedImage qrcode;
+
+    try {
+      BitMatrix matrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, this.width, this.height, getEncodeHints());
+      qrcode = MatrixToImageWriter.toBufferedImage(matrix);
+    }
+    catch (Exception e) {
+      throw new CouldNotCreateQRCodeException("QRCode could not be generated", e.getCause());
+    }
+
+    return qrcode;
+  }
+
+  private BufferedImage decorate(BufferedImage qrcode) {
+    if(decorators != null){
+      for(QRCodeDecorator decorator : decorators){
+        qrcode = decorator.decorate(qrcode);
+      }
+    }
+
+    return qrcode;
+  }
 }

@@ -8,6 +8,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.skrymer.qrbuilder.exception.InvalidSizeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.apache.commons.lang.RandomStringUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -24,7 +25,6 @@ import static org.testng.Assert.assertEquals;
 
 @Test
 public class ZXingQRCodeBuilderTest {
-  private static final String EXPTECTED_QRCODE_DATA  = "some awesome data";
   private static final int    EXPECTED_QRCODE_WIDTH  = 250;
   private static final int    EXPECTED_QRCODE_HEIGHT = 250;
   
@@ -35,41 +35,47 @@ public class ZXingQRCodeBuilderTest {
     sut = new ZXingQRCodeBuilder();
   }
   
-  @Test(timeOut=500, invocationCount=10, successPercentage=95)
+  @Test(invocationCount=10)
   public void testBuildQRCode_noOverlay_sucess() throws Exception {
+    String expectedData = RandomStringUtils.randomAlphabetic(500);
+
     BufferedImage qrcode = sut.newQRCode()
                               .withSize(EXPECTED_QRCODE_WIDTH, EXPECTED_QRCODE_HEIGHT)
                                 .and()
-                              .withData(EXPTECTED_QRCODE_DATA)
-                              .create();
+                              .withData(expectedData)
+                              .toBufferedImage();
     
-    assertQRCode(qrcode);
+    assertQRCode(expectedData, qrcode);
   }
 
-  @Test(timeOut=500)
+  @Test(invocationCount=10)
   public void testBuildQRCode_withImageOverlay_sucess() throws Exception {
+    String expectedData = RandomStringUtils.randomAlphabetic(500);
+
     BufferedImage qrcode = sut.newQRCode()
                               .withSize(EXPECTED_QRCODE_WIDTH, EXPECTED_QRCODE_HEIGHT)
                                 .and()
-                              .withData(EXPTECTED_QRCODE_DATA)
+                              .withData(expectedData)
                                 .and()
                               .decorate(addImageOverlay(getOverlay(), 1.0f, 0.25f))
-                              .create();
+                              .toBufferedImage();
 
-    assertQRCode(qrcode);
+    assertQRCode(expectedData, qrcode);
   }
 
-  @Test(timeOut=1000)
+  @Test(invocationCount=10)
   public void testBuildQRCode_createRedQRCode_sucess() throws Exception {
+    String expectedData = RandomStringUtils.randomAlphabetic(500);
+
     BufferedImage qrcode = sut.newQRCode()
                               .withSize(EXPECTED_QRCODE_WIDTH, EXPECTED_QRCODE_HEIGHT)
                                 .and()
-                              .withData(EXPTECTED_QRCODE_DATA)
+                              .withData(expectedData)
                                 .and()
                               .decorate(colorizeQRCode(Color.RED))
-                              .create();
+                              .toBufferedImage();
 
-    assertQRCode(qrcode);
+    assertQRCode(expectedData, qrcode);
   }
 
   @Test(expectedExceptions=InvalidSizeException.class)
@@ -77,8 +83,8 @@ public class ZXingQRCodeBuilderTest {
     sut.newQRCode()
        .withSize(0, 1)
          .and()
-       .withData(EXPTECTED_QRCODE_DATA)
-       .create();
+       .withData("Some data")
+       .toBufferedImage();
   }
 	
   @Test(expectedExceptions=InvalidSizeException.class)
@@ -86,8 +92,8 @@ public class ZXingQRCodeBuilderTest {
     sut.newQRCode()
        .withSize(1, 0)
          .and()
-       .withData(EXPTECTED_QRCODE_DATA)
-       .create();
+       .withData("Some data")
+       .toBufferedImage();
   }
 	
   @Test(expectedExceptions=UnreadableDataException.class) 
@@ -95,27 +101,26 @@ public class ZXingQRCodeBuilderTest {
     sut.newQRCode()
        .withSize(250, 250)
          .and()
-       .withData(EXPTECTED_QRCODE_DATA)
+       .withData("Some data")
          .and()
        .decorate(addImageOverlay(getOverlay(), 1.0f, 0.35f))
-       .create();
+       .toBufferedImage();
   }
 		
 //----------------------
 // Helper methods
 //----------------------
 	
-  private void assertQRCode(BufferedImage qrcode) throws Exception {
+  private void assertQRCode(String expectedData, BufferedImage qrcode) throws Exception {
     assertEquals(EXPECTED_QRCODE_WIDTH,  qrcode.getWidth());
     assertEquals(EXPECTED_QRCODE_HEIGHT, qrcode.getHeight());
-    assertEquals(EXPTECTED_QRCODE_DATA,  decodeQRCode(qrcode));  
+    assertEquals(expectedData,  decodeQRCode(qrcode));
   }
 	
   private String decodeQRCode(BufferedImage qrcode) throws Exception{
     BinaryBitmap binaryBitmap = new BinaryBitmap(new HybridBinarizer(new BufferedImageLuminanceSource(qrcode)));
     Map<DecodeHintType, Object> decodeHints = new HashMap<DecodeHintType, Object>();
-    decodeHints.put(DecodeHintType.CHARACTER_SET, "utf-8");
-    decodeHints.put(DecodeHintType.TRY_HARDER, Boolean.TRUE);
+    decodeHints.put(DecodeHintType.PURE_BARCODE, Boolean.TRUE);
 
     Result result = new QRCodeReader().decode(binaryBitmap, decodeHints);
     

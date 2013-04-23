@@ -4,7 +4,10 @@ import com.skrymer.qrbuilder.decorator.QRCodeDecorator;
 import com.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
 
+import javax.imageio.ImageTypeSpecifier;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -33,7 +36,7 @@ public interface QRCBuilder {
    * @param doVerify
    * @return
    */
-  public QRCBuilder verifyQRCode(Boolean doVerify);
+  public QRCBuilder doVerify(Boolean doVerify);
 
   /**
    * Adds the specified data to the QRCode
@@ -67,12 +70,25 @@ public interface QRCBuilder {
   /**
    * Creates the new QRCode image with the specified attributes
    *
-   * @throws com.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException
+   * @throws CouldNotCreateQRCodeException
    *    If the QRCode could not be generated a CouldNotCreateQRCodeException is thrown
-   * @throws com.skrymer.qrbuilder.exception.UnreadableDataException
+   * @throws UnreadableDataException
    *    If the data contained in the QRCode is not the same as the data specified or the data is unreadable
    * @return
    *    The new QRCode image
    */
-  public BufferedImage create() throws CouldNotCreateQRCodeException, UnreadableDataException;
+  public BufferedImage toBufferedImage() throws CouldNotCreateQRCodeException, UnreadableDataException;
+
+  /**
+   *
+   * @param fileName - the absolute file name
+   * @param fileFormat - the image type (png, jpg, gif)
+   * @throws CouldNotCreateQRCodeException
+   *    If the QRCode could not be generated a CouldNotCreateQRCodeException is thrown
+   * @throws UnreadableDataException
+   *    If the data contained in the QRCode is not the same as the data specified or the data is unreadable
+   * @return
+   *    The generated image file
+   */
+  public File toFile(String fileName, String fileFormat) throws CouldNotCreateQRCodeException, UnreadableDataException, IOException;
 }

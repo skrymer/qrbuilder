@@ -3,13 +3,6 @@ package com.skrymer.qrbuilder.util;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-/**
- * Created with IntelliJ IDEA.
- * User: skrymer
- * Date: 21/04/13
- * Time: 3:31 PM
- * To change this template use File | Settings | File Templates.
- */
 public class ImageUtils {
 
   public static BufferedImage imageToBufferedImage(Image image) {
