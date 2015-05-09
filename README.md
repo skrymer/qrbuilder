@@ -1,4 +1,4 @@
-This is a simple qrcode builder that is build ontop of the awesome ZXing library for barcode generation: http://code.google.com/p/zxing/
+This is a simple qrcode builder that is build ontop of the awesome ZXing library for barcode generation: https://github.com/zxing/zxing
 
 QRCBuilder
 =========
@@ -44,7 +44,7 @@ The following qrCode is then generated:
 The builder uses the notion of decorators to decorate the generated QRCode. 
 
 Decorators currently avaliable:
-* ImageOverlay to add a image overlay 
-* ColoredQRCode which colors the qrcode
+* com.skrymer.qrbuilder.decorator.ImageOverlay - adds a image overlay
+* com.skrymer.qrbuilder.decorator.ColoredQRCode - colors the qrcode
 
-You can create you're own Decorators by implementing the QRCodeDecorator interface
+You can create you're own Decorators by implementing the com.skrymer.qrbuilder.decorator.QRCodeDecorator interface
