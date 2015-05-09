@@ -25,11 +25,16 @@ import javax.imageio.ImageIO;
 
 import static com.skrymer.qrbuilder.util.SyntacticSugar.throwIllegalArgumentExceptionIfEmpty;
 
-public class ZXingQRCodeBuilder implements QRCBuilder {
+/**
+ * QRCBuilder implementation using the ZXing library to generate a qrCode as a  BufferedImage
+ *
+ * see https://github.com/zxing/zxing
+ */
+public class ZXingQRCodeBuilder implements QRCBuilder<BufferedImage> {
     private String data;
     private Boolean verify;
     private Integer width, height;
-    private List<QRCodeDecorator> decorators;
+    private List<QRCodeDecorator<BufferedImage>> decorators;
 
     public ZXingQRCodeBuilder() {
         verify = true;
@@ -66,7 +71,7 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
 
     public QRCBuilder decorate(QRCodeDecorator decorator) {
         if (decorators == null) {
-            decorators = new LinkedList<QRCodeDecorator>();
+            decorators = new LinkedList<QRCodeDecorator<BufferedImage>>();
         }
 
         decorators.add(decorator);
@@ -74,7 +79,7 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
         return this;
     }
 
-    public BufferedImage toBufferedImage() throws CouldNotCreateQRCodeException, UnreadableDataException {
+    public BufferedImage toImage() throws CouldNotCreateQRCodeException, UnreadableDataException {
         BufferedImage qrcode = encode();
         qrcode = decorate(qrcode);
         verifyQRCode(qrcode);
@@ -88,7 +93,7 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
 
         File imageFile = new File(fileName);
 
-        ImageIO.write(toBufferedImage(), fileFormat, imageFile);
+        ImageIO.write(toImage(), fileFormat, imageFile);
 
         return imageFile;
     }
@@ -158,7 +163,7 @@ public class ZXingQRCodeBuilder implements QRCBuilder {
 
     private BufferedImage decorate(BufferedImage qrcode) {
         if (decorators != null) {
-            for (QRCodeDecorator decorator : decorators) {
+            for (QRCodeDecorator<BufferedImage> decorator : decorators) {
                 qrcode = decorator.decorate(qrcode);
             }
         }

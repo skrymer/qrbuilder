@@ -8,7 +8,7 @@ import java.awt.image.*;
 /**
  * Decorator that colors a qrcode
  */
-public class ColoredQRCode implements QRCodeDecorator {
+public class ColoredQRCode implements QRCodeDecorator<BufferedImage> {
   private Color color;
 
   /**
@@ -16,7 +16,7 @@ public class ColoredQRCode implements QRCodeDecorator {
    * @param color the color
    * @return this
    */
-  public static QRCodeDecorator colorizeQRCode(Color color){
+  public static QRCodeDecorator<BufferedImage> colorizeQRCode(Color color){
     return new ColoredQRCode(color);
   }
 

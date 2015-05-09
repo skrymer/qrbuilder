@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 /**
  * Adds a image overlay to a qrcode
  */
-public class ImageOverlay implements QRCodeDecorator {
+public class ImageOverlay implements QRCodeDecorator<BufferedImage> {
   public static final Float DEFAULT_OVERLAY_TRANSPARENCY     = 1f;
   public static final Float DEFAULT_OVERLAY_TO_QRCODE_RATIO  = 0.25f;
 
@@ -26,7 +26,7 @@ public class ImageOverlay implements QRCodeDecorator {
    *
    * @throws IllegalArgumentException - if the overlay is null
    */
-  public static QRCodeDecorator addImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
+  public static QRCodeDecorator<BufferedImage> addImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
     return new ImageOverlay(overlay, overlayTransparency, overlayToQRCodeRatio);
   }
 

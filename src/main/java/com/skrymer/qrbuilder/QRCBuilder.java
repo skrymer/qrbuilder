@@ -4,31 +4,26 @@ import com.skrymer.qrbuilder.decorator.QRCodeDecorator;
 import com.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
 
-import javax.imageio.ImageTypeSpecifier;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Created with IntelliJ IDEA.
- * User: skrymer
- * Date: 21/04/13
- * Time: 12:09 PM
- * To change this template use File | Settings | File Templates.
+ * A builder to create QRCodes
+ *
  */
-public interface QRCBuilder {
+public interface QRCBuilder<T> {
 
   /**
    * Syntactic sugar - qrbuilder.newQRCode().with....
    * @return
    */
-  public QRCBuilder newQRCode();
+  public QRCBuilder<T> newQRCode();
 
   /**
    * Syntactic sugar - qrbuilder.newQRCode().with().and().with()
    * @return
    */
-  public QRCBuilder and();
+  public QRCBuilder<T> and();
 
   /**
    * Should the generated QRCode be verified after creation
@@ -36,7 +31,7 @@ public interface QRCBuilder {
    * @param doVerify
    * @return
    */
-  public QRCBuilder doVerify(Boolean doVerify);
+  public QRCBuilder<T> doVerify(Boolean doVerify);
 
   /**
    * Adds the specified data to the QRCode
@@ -44,7 +39,7 @@ public interface QRCBuilder {
    * @param data
    * @return
    */
-  public QRCBuilder withData(String data);
+  public QRCBuilder<T> withData(String data);
 
   /**
    * Sets the size for the generated QRCode
@@ -55,7 +50,7 @@ public interface QRCBuilder {
    * @return
    *    this
    */
-  public QRCBuilder withSize(Integer width, Integer height);
+  public QRCBuilder<T> withSize(Integer width, Integer height);
 
   /**
    * Adds the given decorator. Decoration is applied after the qrcode has been generated
@@ -65,7 +60,7 @@ public interface QRCBuilder {
    * @param decorator
    * @return
    */
-  public QRCBuilder decorate(QRCodeDecorator decorator);
+  public QRCBuilder<T> decorate(QRCodeDecorator<T> decorator);
 
   /**
    * Creates the new QRCode image with the specified attributes
@@ -77,7 +72,7 @@ public interface QRCBuilder {
    * @return
    *    The new QRCode image
    */
-  public BufferedImage toBufferedImage() throws CouldNotCreateQRCodeException, UnreadableDataException;
+  public T toImage() throws CouldNotCreateQRCodeException, UnreadableDataException;
 
   /**
    *
