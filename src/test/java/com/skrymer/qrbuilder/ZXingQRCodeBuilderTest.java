@@ -8,7 +8,7 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.skrymer.qrbuilder.exception.InvalidSizeException;
 import com.skrymer.qrbuilder.exception.UnreadableDataException;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -25,8 +25,8 @@ import static org.testng.Assert.assertEquals;
 
 @Test
 public class ZXingQRCodeBuilderTest {
-  private static final int    EXPECTED_QRCODE_WIDTH  = 250;
-  private static final int    EXPECTED_QRCODE_HEIGHT = 250;
+  private static final int EXPECTED_QRCODE_WIDTH  = 250;
+  private static final int EXPECTED_QRCODE_HEIGHT = 250;
   
   private QRCBuilder sut;
   

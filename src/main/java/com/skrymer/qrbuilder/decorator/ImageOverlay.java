@@ -4,11 +4,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 /**
- * Created with IntelliJ IDEA.
- * User: skrymer
- * Date: 21/04/13
- * Time: 12:32 PM
- * To change this template use File | Settings | File Templates.
+ * Adds a image overlay to a qrcode
  */
 public class ImageOverlay implements QRCodeDecorator {
   public static final Float DEFAULT_OVERLAY_TRANSPARENCY     = 1f;
@@ -30,29 +26,18 @@ public class ImageOverlay implements QRCodeDecorator {
    *
    * @throws IllegalArgumentException - if the overlay is null
    */
-  private ImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
-    if(overlay == null)
-      throw new IllegalArgumentException("Overlay is required");
-
-    this.overlay = overlay;
-
-    if(overlayTransparency == null){
-      this.overlayTransparency = DEFAULT_OVERLAY_TRANSPARENCY;
-    }
-    else{
-      this.overlayTransparency = overlayTransparency;
-    }
-
-    if(overlayToQRCodeRatio == null){
-      this.overlayToQRCodeRatio = DEFAULT_OVERLAY_TO_QRCODE_RATIO;
-    }
-    else {
-      this.overlayToQRCodeRatio = overlayToQRCodeRatio;
-    }
-  }
-
   public static QRCodeDecorator addImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
     return new ImageOverlay(overlay, overlayTransparency, overlayToQRCodeRatio);
+  }
+
+  private ImageOverlay(BufferedImage overlay, Float overlayTransparency, Float overlayToQRCodeRatio){
+    if(overlay == null) {
+      throw new IllegalArgumentException("Overlay is required");
+    }
+
+    this.overlay = overlay;
+    this.overlayTransparency = overlayTransparency == null ? DEFAULT_OVERLAY_TRANSPARENCY : overlayTransparency;
+    this.overlayToQRCodeRatio = overlayToQRCodeRatio == null ? DEFAULT_OVERLAY_TO_QRCODE_RATIO : overlayToQRCodeRatio;
   }
 
   public BufferedImage decorate(BufferedImage qrcode) {

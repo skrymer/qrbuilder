@@ -5,20 +5,33 @@ import static com.skrymer.qrbuilder.util.ImageUtils.*;
 import java.awt.*;
 import java.awt.image.*;
 
+/**
+ * Decorator that colors a qrcode
+ */
 public class ColoredQRCode implements QRCodeDecorator {
   private Color color;
 
   /**
-   * @param color
+   * Colors the qrcode with the given color
+   * @param color the color
+   * @return this
+   */
+  public static QRCodeDecorator colorizeQRCode(Color color){
+    return new ColoredQRCode(color);
+  }
+
+  /**
+   * @param color the color
    */
   private ColoredQRCode(Color color) {
     this.color = color;
   }
 
-  public static QRCodeDecorator colorizeQRCode(Color color){
-   return new ColoredQRCode(color);
-  }
-
+  /**
+   * Colors the given qrcode
+   * @param qrcode the qrcode to color
+   * @return
+   */
   public BufferedImage decorate(BufferedImage qrcode) {
     FilteredImageSource prod = new FilteredImageSource(qrcode.getSource(), new QRCodeRGBImageFilter());//new QRCodeRGBImageFilter());
 
@@ -26,7 +39,6 @@ public class ColoredQRCode implements QRCodeDecorator {
   }
 
   private class QRCodeRGBImageFilter extends RGBImageFilter {
-
     public int filterRGB(int x, int y, int rgb) {
       if(rgb == Color.black.getRGB())
         return color.getRGB();
