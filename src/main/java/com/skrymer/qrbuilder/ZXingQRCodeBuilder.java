@@ -113,25 +113,32 @@ public class ZXingQRCodeBuilder implements QRCBuilder<BufferedImage> {
     }
 
     private void verifyQRCode(BufferedImage qrcode) {
-        if (verify) {
-            try {
-                BinaryBitmap binaryBitmap = new BinaryBitmap(
-                        new HybridBinarizer(
-                                new BufferedImageLuminanceSource(qrcode)));
-
-                Result readData = new QRCodeReader().decode(binaryBitmap, getDecodeHints());
-
-                if (!readData.getText().equals(this.data)) {
-                    throw new UnreadableDataException("The data contained in the qrcode is as expected: " + this.data + " actual: " + readData);
-                }
-            } catch (NotFoundException nfe) {
-                throw new UnreadableDataException("The data contained in the qrcode is not readable", nfe);
-            } catch (ChecksumException ce) {
-                throw new UnreadableDataException("The data contained in the qrcode is not readable", ce);
-            } catch (FormatException fe) {
-                throw new UnreadableDataException("The data contained in the qrcode is not readable", fe);
-            }
+        if (!verify) {
+            return;
         }
+
+        try {
+            Result readData = readData(qrcode);
+
+            if (readData != null && !readData.getText().equals(this.data)) {
+                throw new UnreadableDataException("The data contained in the qrCode is not as expected: " + this.data + " actual: " + readData);
+            }
+        } catch (NotFoundException nfe) {
+            throw new UnreadableDataException("The data contained in the qrCode is not readable", nfe);
+        } catch (ChecksumException ce) {
+            throw new UnreadableDataException("The data contained in the qrCode is not readable", ce);
+        } catch (FormatException fe) {
+            throw new UnreadableDataException("The data contained in the qrCode is not readable", fe);
+        }
+    }
+
+    private Result readData(BufferedImage qrcode) throws FormatException, ChecksumException, NotFoundException {
+        BinaryBitmap binaryBitmap = new BinaryBitmap(
+                new HybridBinarizer(
+                        new BufferedImageLuminanceSource(qrcode))
+        );
+
+        return new QRCodeReader().decode(binaryBitmap, getDecodeHints());
     }
 
     private Map<EncodeHintType, Object> getEncodeHints() {
