@@ -10,19 +10,24 @@ import static com.skrymer.qrbuilder.decorator.ImageOverlay.*;
 import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 
 public class Main {
+    public static final float TRANSPARENCY = 0.25f;
+    public static final float OVERLAY_RATIO = 1f;
+    public static final int WIDTH = 250;
+    public static final int HEIGHT = 250;
+
     public static void main(String[] args) throws Exception {
         QRCBuilder<BufferedImage> qrCodeBuilder = new ZXingQRCodeBuilder();
 
         qrCodeBuilder.newQRCode()
-        .withSize(250, 250)
+        .withSize(WIDTH, HEIGHT)
             .and()
-        .withData("The answer to the universe and everything: 42")
+        .withData("The answer is 42")
             .and()
         .decorate(colorizeQRCode(Color.green.darker()))
             .and()
-        .decorate(addImageOverlay(ImageIO.read(new File("src/test/resources/images/skull_bw.png")), 0.25f, 1f))
+        .decorate(addImageOverlay(ImageIO.read(new File("src/test/resources/images/skull_bw.png")), TRANSPARENCY, OVERLAY_RATIO))
             .and()
         .doVerify(true)
-        .toFile("./qrcode.png", "PNG");
+        .toFile("./qrCode.png", "PNG");
     }
 }
