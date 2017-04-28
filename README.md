@@ -53,12 +53,12 @@ The following qrCode is then generated:
 
 ![alt text](https://raw.github.com/wiki/skrymer/qrbuilder/images/qrcode.png "QRCode")
 
-##Decorators
+## Decorators
 
 The builder uses the decorators to decorate(obviously) the generated QRCode. 
 
 Decorators currently available:
-* com.skrymer.qrbuilder.decorator.ImageOverlay - adds a image overlay
-* com.skrymer.qrbuilder.decorator.ColoredQRCode - colors the qrcode
+* com.skrymer.qrbuilder.decorator.ImageOverlay 
+* com.skrymer.qrbuilder.decorator.ColoredQRCode 
 
 You can create new Decorators by implementing the com.skrymer.qrbuilder.decorator.Decorator interface
