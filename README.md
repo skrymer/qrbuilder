@@ -5,7 +5,7 @@ QRCodeBuilder
 
 The builder is very simple to use, as the following example will shows.
 
-Create a qrcode with dimensions 250*250, a image overlay and some data:
+Create a QRCode with dimensions 250*250, a image overlay and some data:
 
 ```java
 package com.skrymer.qrbuilder;
@@ -16,16 +16,16 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.*;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
+import static org.skrymer.qrbuilder.decorator.ImageOverlay.*;
+import static org.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 
 public class Main {
-  public static final float TRANSPARENCY = 0.25f;
-  public static final float OVERLAY_RATIO = 1f;
-  public static final int WIDTH = 250;
-  public static final int HEIGHT = 250;
+  static final float TRANSPARENCY = 0.25f;
+  static final float OVERLAY_RATIO = 1f;
+  static final int WIDTH = 250;
+  static final int HEIGHT = 250;
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     QRCode.ZXingBuilder.build(builder ->
         builder.withSize(WIDTH, HEIGHT)
               .and()
@@ -40,7 +40,7 @@ public class Main {
     ).toFile("./qrCode.png", "PNG");
   }
 
-  public static BufferedImage readImage(String path) {
+  static BufferedImage readImage(String path) {
     try {
       return ImageIO.read(new File(path));
     } catch (IOException e) {
@@ -58,7 +58,7 @@ The following qrCode is then generated:
 The builder uses the decorators to decorate(obviously) the generated QRCode. 
 
 Decorators currently available:
-* com.skrymer.qrbuilder.decorator.ImageOverlay 
-* com.skrymer.qrbuilder.decorator.ColoredQRCode 
+* ImageOverlay 
+* ColoredQRCode 
 
-You can create new Decorators by implementing the com.skrymer.qrbuilder.decorator.Decorator interface
+You can create new Decorators by implementing the Decorator interface
