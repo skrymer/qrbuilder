@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 public class Main {
-  public static final float TRANSPARENCY = 0.25f;
+  public static final float TRANSPARENCY = 0.20f;
   public static final float OVERLAY_RATIO = 1f;
   public static final int WIDTH = 250;
   public static final int HEIGHT = 250;
@@ -41,5 +41,5 @@ public class Main {
     }
   }
 
-  private static String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam scelerisque dictum ipsum, mollis faucibus neque. Vestibulum suscipit eu urna eget lobortis. Donec accumsan ultrices turpis nec lacinia. Ut tincidunt dapibus leo sed lacinia. Aliquam pulvinar justo non elit sagittis, et volutpat mi vehicula. Nulla facilisi. Donec imperdiet cursus sapien in.";
+  private static String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam scelerisque dictum ipsum, mollis faucibus neque. Vestibulum suscipit eu urna eget lobortis.";
 }

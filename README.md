@@ -16,8 +16,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.*;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
+import static org.skrymer.qrbuilder.decorator.ImageOverlay.*;
+import static org.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 
 public class Main {
   static final float TRANSPARENCY = 0.25f;
