@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.skrymer.qrbuilder</groupId>
   <artifactId>qrbuilder</artifactId>
-  <version>1.1</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
   <name>qrbuilder</name>
   <url>https://github.com/skrymer/qrbuilder</url>
