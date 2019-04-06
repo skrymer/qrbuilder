@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder.exception;
+package org.skrymer.qrbuilder.exception;
 
 /**
  * {@link CouldNotCreateFileException}

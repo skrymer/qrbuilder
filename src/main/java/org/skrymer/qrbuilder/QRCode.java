@@ -1,10 +1,9 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -16,15 +15,14 @@ import com.google.zxing.common.HybridBinarizer;
 import com.google.zxing.qrcode.QRCodeReader;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
-import com.skrymer.qrbuilder.decorator.Decorator;
-import com.skrymer.qrbuilder.exception.CouldNotCreateFileException;
-import com.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException;
-import com.skrymer.qrbuilder.exception.InvalidSizeException;
-import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.skrymer.qrbuilder.decorator.Decorator;
+import org.skrymer.qrbuilder.exception.CouldNotCreateFileException;
+import org.skrymer.qrbuilder.exception.CouldNotCreateQRCodeException;
+import org.skrymer.qrbuilder.exception.InvalidSizeException;
+import org.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.skrymer.qrbuilder.util.SyntacticSugar;
 
 import javax.imageio.ImageIO;
-
-import static com.skrymer.qrbuilder.util.SyntacticSugar.throwIllegalArgumentExceptionIfEmpty;
 
 /**
  * QRCode using the ZXing library to generate images and files
@@ -55,8 +53,8 @@ public class QRCode {
   }
 
   public File toFile(String fileName, String fileFormat) throws CouldNotCreateQRCodeException, UnreadableDataException {
-    throwIllegalArgumentExceptionIfEmpty(fileName, "fileName");
-    throwIllegalArgumentExceptionIfEmpty(fileFormat, "fileFormat");
+    SyntacticSugar.throwIllegalArgumentExceptionIfEmpty(fileName, "fileName");
+    SyntacticSugar.throwIllegalArgumentExceptionIfEmpty(fileFormat, "fileFormat");
 
     try {
       File imageFile = new File(fileName);

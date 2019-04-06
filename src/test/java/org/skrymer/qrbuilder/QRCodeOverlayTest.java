@@ -1,6 +1,8 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
 
-import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.skrymer.qrbuilder.decorator.ImageOverlay;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import javax.imageio.ImageIO;
@@ -8,8 +10,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.skrymer.qrbuilder.TestHelpers.decode;
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.addImageOverlay;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -25,10 +25,10 @@ public class QRCodeOverlayTest {
             .and()
             .withData("and time began with a bang")
             .and()
-            .withDecorator(addImageOverlay(getOverlay(), 1.0f, 0.25f))
+            .withDecorator(ImageOverlay.addImageOverlay(getOverlay(), 1.0f, 0.25f))
     ).toImage();
 
-    assertEquals("and time began with a bang", decode(qrcode));
+    Assert.assertEquals("and time began with a bang", TestHelpers.decode(qrcode));
   }
 
   @Test(expectedExceptions=UnreadableDataException.class)
@@ -38,7 +38,7 @@ public class QRCodeOverlayTest {
             .and()
             .withData("Some data")
             .and()
-            .withDecorator(addImageOverlay(getOverlay(), 1.0f, 0.35f))
+            .withDecorator(ImageOverlay.addImageOverlay(getOverlay(), 1.0f, 0.35f))
     ).toImage();
   }
 

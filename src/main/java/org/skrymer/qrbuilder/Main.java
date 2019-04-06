@@ -1,4 +1,7 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
+
+import org.skrymer.qrbuilder.decorator.ColoredQRCode;
+import org.skrymer.qrbuilder.decorator.ImageOverlay;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -6,9 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.*;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 
 public class Main {
   public static final float TRANSPARENCY = 0.25f;
@@ -23,9 +23,9 @@ public class Main {
             .and()
             .withData(loremIpsum)
             .and()
-            .withDecorator(colorizeQRCode(Color.green.darker()))
+            .withDecorator(ColoredQRCode.colorizeQRCode(Color.green.darker()))
             .and()
-            .withDecorator(addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
+            .withDecorator(ImageOverlay.addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
             .and()
             .withCharSet(Charset.forName("UTF-8"))
             .verify(true)

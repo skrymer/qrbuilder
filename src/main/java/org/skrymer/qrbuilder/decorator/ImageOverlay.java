@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder.decorator;
+package org.skrymer.qrbuilder.decorator;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

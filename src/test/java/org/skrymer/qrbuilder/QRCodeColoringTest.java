@@ -1,12 +1,12 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
 
+import org.skrymer.qrbuilder.decorator.ColoredQRCode;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import static com.skrymer.qrbuilder.TestHelpers.decode;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -22,10 +22,10 @@ public class QRCodeColoringTest {
             .and()
             .withData("the ninjas are coming")
             .and()
-            .withDecorator(colorizeQRCode(Color.RED))
+            .withDecorator(ColoredQRCode.colorizeQRCode(Color.RED))
     ).toImage();
 
-    assertEquals("the ninjas are coming", decode(qrcode));
+    Assert.assertEquals("the ninjas are coming", TestHelpers.decode(qrcode));
   }
 
   @Test(invocationCount=10)
@@ -35,11 +35,11 @@ public class QRCodeColoringTest {
             .and()
             .withData("the ninjas are coming")
             .and()
-            .withDecorator(colorizeQRCode(Color.RED))
+            .withDecorator(ColoredQRCode.colorizeQRCode(Color.RED))
     ).toImage();
 //    qrcode.getColorModel().getGreen()
 
     qrcode.getRGB(0,0);
-    assertEquals("the ninjas are coming", decode(qrcode));
+    Assert.assertEquals("the ninjas are coming", TestHelpers.decode(qrcode));
   }
 }
