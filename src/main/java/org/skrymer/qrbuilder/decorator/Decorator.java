@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder.decorator;
+package org.skrymer.qrbuilder.decorator;
 
 /**
  * Implement this interface to create custom decorators

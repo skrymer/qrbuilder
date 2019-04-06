@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder.util;
+package org.skrymer.qrbuilder.util;
 
 import org.apache.commons.lang3.StringUtils;
 

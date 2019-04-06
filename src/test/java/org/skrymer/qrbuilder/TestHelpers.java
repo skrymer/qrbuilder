@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
 
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;

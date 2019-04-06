@@ -1,6 +1,6 @@
-package com.skrymer.qrbuilder.decorator;
+package org.skrymer.qrbuilder.decorator;
 
-import static com.skrymer.qrbuilder.util.ImageUtils.*;
+import org.skrymer.qrbuilder.util.ImageUtils;
 
 import java.awt.*;
 import java.awt.image.*;
@@ -35,7 +35,7 @@ public class ColoredQRCode implements Decorator<BufferedImage> {
   public BufferedImage decorate(BufferedImage qrcode) {
     FilteredImageSource prod = new FilteredImageSource(qrcode.getSource(), new QRCodeRGBImageFilter());
 
-    return imageToBufferedImage(Toolkit.getDefaultToolkit().createImage(prod));
+    return ImageUtils.imageToBufferedImage(Toolkit.getDefaultToolkit().createImage(prod));
   }
 
   private class QRCodeRGBImageFilter extends RGBImageFilter {

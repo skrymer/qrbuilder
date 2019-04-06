@@ -1,26 +1,11 @@
-package com.skrymer.qrbuilder;
+package org.skrymer.qrbuilder;
 
-import com.google.zxing.BinaryBitmap;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.Result;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
-import com.google.zxing.qrcode.QRCodeReader;
-import com.skrymer.qrbuilder.exception.InvalidSizeException;
-import com.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.skrymer.qrbuilder.exception.InvalidSizeException;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
-import static com.skrymer.qrbuilder.TestHelpers.decode;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.addImageOverlay;
 import static org.testng.Assert.assertEquals;
 
 /**
@@ -37,7 +22,7 @@ public class QRCodeTest {
                .withData("the answer to everything is 42")
     ).toImage();
 
-    assertEquals("the answer to everything is 42",  decode(qrcode));
+    Assert.assertEquals("the answer to everything is 42",  TestHelpers.decode(qrcode));
   }
 
   @Test(invocationCount=10)

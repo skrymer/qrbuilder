@@ -16,8 +16,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static com.skrymer.qrbuilder.decorator.ImageOverlay.*;
-import static com.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
+import static ImageOverlay.*;
+import static ColoredQRCode.colorizeQRCode;
 
 public class Main {
   public static final float TRANSPARENCY = 0.25f;
@@ -58,7 +58,7 @@ The following qrCode is then generated:
 The builder uses the decorators to decorate(obviously) the generated QRCode. 
 
 Decorators currently available:
-* com.skrymer.qrbuilder.decorator.ImageOverlay 
-* com.skrymer.qrbuilder.decorator.ColoredQRCode 
+* ImageOverlay 
+* ColoredQRCode 
 
-You can create new Decorators by implementing the com.skrymer.qrbuilder.decorator.Decorator interface
+You can create new Decorators by implementing the Decorator interface

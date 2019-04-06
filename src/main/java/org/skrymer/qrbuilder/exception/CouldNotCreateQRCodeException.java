@@ -1,4 +1,4 @@
-package com.skrymer.qrbuilder.exception;
+package org.skrymer.qrbuilder.exception;
 
 public class CouldNotCreateQRCodeException extends RuntimeException {
 
