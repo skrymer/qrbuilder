@@ -17,7 +17,7 @@ public class QRCodeColoringTest {
 
   @Test(invocationCount=10)
   public void whenColoringAQRCode_thenQRCodeShouldBeReadable() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(500, 500)
             .and()
             .withData("the ninjas are coming")
@@ -30,7 +30,7 @@ public class QRCodeColoringTest {
 
   @Test(invocationCount=10)
   public void whenBuildingRedQRCode_thenQRCodeShouldBeRed() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(500, 500)
             .and()
             .withData("the ninjas are coming")

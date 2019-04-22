@@ -20,7 +20,7 @@ public class QRCodeOverlayTest {
 
   @Test(invocationCount=10)
   public void whenBuildingQrCodeWithOverlay_thenQRCodeDataShouldBeReadable() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(250, 250)
             .and()
             .withData("and time began with a bang")
@@ -33,7 +33,7 @@ public class QRCodeOverlayTest {
 
   @Test(expectedExceptions=UnreadableDataException.class)
   public void whenOverlayRatioIsToBig_thenThrowUnreadableDataException() throws Exception {
-    QRCode.ZXingBuilder.build(builder ->
+    QRCode.Builder.build(builder ->
         builder.withSize(250, 250)
             .and()
             .withData("Some data")

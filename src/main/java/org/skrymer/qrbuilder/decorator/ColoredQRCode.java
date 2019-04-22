@@ -7,6 +7,8 @@ import java.awt.image.*;
 
 /**
  * Decorator that colors a qrcode
+ *
+ * Should be applied first
  */
 public class ColoredQRCode implements Decorator<BufferedImage> {
   private Color color;

@@ -24,6 +24,9 @@ import org.skrymer.qrbuilder.util.SyntacticSugar;
 
 import javax.imageio.ImageIO;
 
+import static org.skrymer.qrbuilder.util.SyntacticSugar.throwIf;
+import static org.skrymer.qrbuilder.util.SyntacticSugar.throwIllegalArgumentExceptionIfEmpty;
+
 /**
  * QRCode using the ZXing library to generate images and files
  * <p>
@@ -36,7 +39,11 @@ public class QRCode {
   private List<Decorator<BufferedImage>> decorators;
   private Charset charSet;
 
-  private QRCode(ZXingBuilder builder) {
+  /**
+   * Use builder
+   * @param builder
+   */
+  private QRCode(Builder builder) {
     data = builder.data;
     verify = builder.verify;
     width = builder.width;
@@ -53,8 +60,8 @@ public class QRCode {
   }
 
   public File toFile(String fileName, String fileFormat) throws CouldNotCreateQRCodeException, UnreadableDataException {
-    SyntacticSugar.throwIllegalArgumentExceptionIfEmpty(fileName, "fileName");
-    SyntacticSugar.throwIllegalArgumentExceptionIfEmpty(fileFormat, "fileFormat");
+    throwIllegalArgumentExceptionIfEmpty(fileName, "fileName");
+    throwIllegalArgumentExceptionIfEmpty(fileFormat, "fileFormat");
 
     try {
       File imageFile = new File(fileName);
@@ -77,7 +84,7 @@ public class QRCode {
     try {
       Result actualData = decode(qrCode);
 
-      if (actualData != null && !actualData.getText().equals(this.data)) {
+      if (!Objects.equals(actualData.getText(), this.data)) {
         throw new UnreadableDataException("The data contained in the qrCode is not as expected: " + this.data + " actual: " + actualData);
       }
     } catch (Exception e) {
@@ -128,48 +135,53 @@ public class QRCode {
 // Builder
 //-------------------
 
-  public static class ZXingBuilder {
+  public static class Builder {
     private String data;
     private boolean verify;
     private int width, height;
     private Charset charSet;
     private List<Decorator<BufferedImage>> decorators;
 
-    private ZXingBuilder(){
+    private Builder(){
       verify = true;
       charSet = Charset.defaultCharset();
       decorators = new ArrayList<>();
     }
 
-    public static QRCode build(Consumer<ZXingBuilder> block) {
-      ZXingBuilder builder = new ZXingBuilder();
+    public static QRCode build(Consumer<Builder> block) {
+      Builder builder = new Builder();
       block.accept(builder);
       return new QRCode(builder);
     }
 
-    public ZXingBuilder and() {
+    public Builder and() {
       return this;
     }
 
-    public ZXingBuilder verify(Boolean doVerify) {
+    public Builder verify(Boolean doVerify) {
       this.verify = doVerify;
       return this;
     }
 
-    public ZXingBuilder withData(String data) {
+    public Builder withData(String data) {
       this.data = data;
       return this;
     }
 
-    public ZXingBuilder withSize(Integer width, Integer height) {
+    public Builder withSize(Integer width, Integer height) {
       validateSize(width, height);
       this.width = width;
       this.height = height;
       return this;
     }
 
-    public ZXingBuilder withDecorator(Decorator decorator) {
+    public Builder withDecorator(Decorator decorator) {
       decorators.add(decorator);
+      return this;
+    }
+
+    public Builder withDecorators(List<Decorator<BufferedImage>> decorators){
+      this.decorators.addAll(decorators);
       return this;
     }
 
@@ -178,19 +190,14 @@ public class QRCode {
      * @param charSet
      * @return
      */
-    public ZXingBuilder withCharSet(Charset charSet){
+    public Builder withCharSet(Charset charSet){
       this.charSet = charSet;
       return this;
     }
 
     private void validateSize(Integer width, Integer height) {
-      if (width <= 0) {
-        throw new InvalidSizeException("Width is to small should be > 0 is " + width);
-      }
-
-      if (height <= 0) {
-        throw new InvalidSizeException("Height is to small should be > 0 is " + height);
-      }
+      throwIf(() -> width <= 0, () -> new InvalidSizeException("Width should be larger than 0 is: " + width));
+      throwIf(() -> height <= 0, () -> new InvalidSizeException("Height should be larger than 0 is: " + height));
     }
   }
 }

@@ -9,14 +9,14 @@ import java.awt.image.BufferedImage;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Tests for class ZXingBuilder
+ * Tests for class Builder
  */
 @Test
 public class QRCodeTest {
 
   @Test(invocationCount=10)
   public void whenBuildingSimpleQrCode_thenEncodedDataIsAsExpected() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(250, 250)
                .and()
                .withData("the answer to everything is 42")
@@ -27,7 +27,7 @@ public class QRCodeTest {
 
   @Test(invocationCount=10)
   public void whenBuildingSimpleQrCode_thenWidthIsAsExpected() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(200, 250)
             .and()
             .withData("To be or not to be that is...")
@@ -38,7 +38,7 @@ public class QRCodeTest {
 
   @Test(invocationCount=10)
   public void whenBuildingSimpleQrCode_thenHeightIsAsExpected() throws Exception {
-    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+    BufferedImage qrcode = QRCode.Builder.build(builder ->
         builder.withSize(300, 300)
             .and()
             .withData("Daffy duck is awesome")
@@ -49,14 +49,14 @@ public class QRCodeTest {
 
   @Test(expectedExceptions=InvalidSizeException.class)
   public void whenWidthIsZero_thenThrowCouldNotCreateQRCodeException(){
-    QRCode.ZXingBuilder.build(builder ->
+    QRCode.Builder.build(builder ->
         builder.withSize(0, 1)
     ).toImage();
   }
 	
   @Test(expectedExceptions=InvalidSizeException.class)
   public void whenHeightIsZero_thenThrowCouldNotCreateQRCodeException(){
-    QRCode.ZXingBuilder.build(builder ->
+    QRCode.Builder.build(builder ->
          builder.withSize(1, 0)
     ).toImage();
   }
