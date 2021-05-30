@@ -1,13 +1,11 @@
 package org.skrymer.qrbuilder;
 
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+
 import org.skrymer.qrbuilder.decorator.ColoredQRCode;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-
-import static org.testng.Assert.assertEquals;
 
 /**
  * Created by skrymer on 30/04/17.
@@ -38,7 +36,6 @@ public class QRCodeColoringTest {
             .withDecorator(ColoredQRCode.colorizeQRCode(Color.RED))
     ).toImage();
 //    qrcode.getColorModel().getGreen()
-
     qrcode.getRGB(0,0);
     Assert.assertEquals("the ninjas are coming", TestHelpers.decode(qrcode));
   }

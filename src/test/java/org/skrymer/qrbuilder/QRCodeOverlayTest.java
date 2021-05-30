@@ -1,16 +1,15 @@
 package org.skrymer.qrbuilder;
 
-import org.skrymer.qrbuilder.exception.UnreadableDataException;
-import org.skrymer.qrbuilder.decorator.ImageOverlay;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static org.testng.Assert.assertEquals;
+import javax.imageio.ImageIO;
+
+import org.skrymer.qrbuilder.decorator.ImageOverlay;
+import org.skrymer.qrbuilder.exception.UnreadableDataException;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * QrCode overlay tests
