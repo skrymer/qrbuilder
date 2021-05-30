@@ -2,3 +2,13 @@
 .idea/
 qrCode.png
 target/
+
+pom*.xml
+
+.classpath
+.project
+org*
+
+.gitignore_*
+
+.vscode/**

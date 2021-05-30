@@ -21,7 +21,7 @@ public class Main {
         builder
             .withSize(WIDTH, HEIGHT)
             .and()
-            .withData(loremIpsum)
+            .withData("One day, lad, all this will be yours. What, the curtains?")
             .and()
             .withDecorator(ColoredQRCode.colorizeQRCode(Color.green.darker()))
             .and()
@@ -40,6 +40,4 @@ public class Main {
       throw new RuntimeException(e);
     }
   }
-
-  private static String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam scelerisque dictum ipsum, mollis faucibus neque. Vestibulum suscipit eu urna eget lobortis.";
 }
