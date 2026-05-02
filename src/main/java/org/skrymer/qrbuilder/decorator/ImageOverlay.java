@@ -1,6 +1,8 @@
 package org.skrymer.qrbuilder.decorator;
 
-import java.awt.*;
+import java.awt.AlphaComposite;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 /**
@@ -10,8 +12,9 @@ public class ImageOverlay implements Decorator<BufferedImage> {
   public static final Float DEFAULT_OVERLAY_TRANSPARENCY     = 1f;
   public static final Float DEFAULT_OVERLAY_TO_QRCODE_RATIO  = 0.25f;
 
-  private BufferedImage overlay;
-  private Float overlayToQRCodeRatio, overlayTransparency;
+  private final BufferedImage overlay;
+  private final Float overlayToQRCodeRatio;
+  private final Float overlayTransparency;
 
   /**
    * @param overlay - the image to be over rendered on top of the qrcode
@@ -46,14 +49,15 @@ public class ImageOverlay implements Decorator<BufferedImage> {
   public BufferedImage decorate(BufferedImage qrcode) {
     BufferedImage scaledOverlay = scaleOverlay(qrcode);
 
-    Integer deltaHeight = qrcode.getHeight() - scaledOverlay.getHeight();
-    Integer deltaWidth  = qrcode.getWidth()  - scaledOverlay.getWidth();
+    int deltaHeight = qrcode.getHeight() - scaledOverlay.getHeight();
+    int deltaWidth  = qrcode.getWidth()  - scaledOverlay.getWidth();
 
-    BufferedImage combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g2 = (Graphics2D)combined.getGraphics();
+    var combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = combined.createGraphics();
     g2.drawImage(qrcode, 0, 0, null);
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlayTransparency));
-    g2.drawImage(scaledOverlay, Math.round(deltaWidth/2), Math.round(deltaHeight/2), null);
+    g2.drawImage(scaledOverlay, deltaWidth / 2, deltaHeight / 2, null);
+    g2.dispose();
 
     return combined;
   }
@@ -63,14 +67,16 @@ public class ImageOverlay implements Decorator<BufferedImage> {
 //-----------------
 
   private BufferedImage scaleOverlay(BufferedImage qrcode){
-    Integer scaledWidth = Math.round(qrcode.getWidth() * overlayToQRCodeRatio);
-    Integer scaledHeight = Math.round(qrcode.getHeight() * overlayToQRCodeRatio);
+    int scaledWidth = Math.round(qrcode.getWidth() * overlayToQRCodeRatio);
+    int scaledHeight = Math.round(qrcode.getHeight() * overlayToQRCodeRatio);
 
-    BufferedImage imageBuff = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
-    Graphics g = imageBuff.createGraphics();
-    g.drawImage(overlay.getScaledInstance(scaledWidth, scaledHeight, BufferedImage.SCALE_SMOOTH), 0, 0, new Color(0,0,0), null);
+    var scaled = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = scaled.createGraphics();
+    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    g.drawImage(overlay, 0, 0, scaledWidth, scaledHeight, null);
     g.dispose();
 
-    return imageBuff;
+    return scaled;
   }
 }

@@ -1,15 +1,13 @@
 package org.skrymer.qrbuilder.decorator;
 
-import org.skrymer.qrbuilder.util.ImageUtils;
-
-import java.awt.*;
-import java.awt.image.*;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
 
 /**
  * Decorator that colors a qrcode
  */
 public class ColoredQRCode implements Decorator<BufferedImage> {
-  private Color color;
+  private final Color color;
 
   /**
    * Colors the qrcode with the given color
@@ -33,17 +31,18 @@ public class ColoredQRCode implements Decorator<BufferedImage> {
    * @return
    */
   public BufferedImage decorate(BufferedImage qrcode) {
-    FilteredImageSource prod = new FilteredImageSource(qrcode.getSource(), new QRCodeRGBImageFilter());
+    int width = qrcode.getWidth();
+    int height = qrcode.getHeight();
+    int blackRgb = Color.black.getRGB();
+    int targetRgb = color.getRGB();
 
-    return ImageUtils.imageToBufferedImage(Toolkit.getDefaultToolkit().createImage(prod));
-  }
-
-  private class QRCodeRGBImageFilter extends RGBImageFilter {
-    public int filterRGB(int x, int y, int rgb) {
-      if(rgb == Color.black.getRGB())
-        return color.getRGB();
-
-      return rgb;
+    var colored = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    for (int y = 0; y < height; y++) {
+      for (int x = 0; x < width; x++) {
+        int rgb = qrcode.getRGB(x, y);
+        colored.setRGB(x, y, rgb == blackRgb ? targetRgb : rgb);
+      }
     }
+    return colored;
   }
 }

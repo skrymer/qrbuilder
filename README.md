@@ -3,6 +3,19 @@ This is a simple qrcode builder that is build ontop of the awesome ZXing library
 QRCodeBuilder
 =========
 
+## Requirements
+
+* JDK 25
+* Maven 3.9+
+
+## Build
+
+```
+mvn package
+```
+
+## Usage
+
 The builder is very simple to use, as the following example will shows.
 
 Create a QRCode with dimensions 250*250, a image overlay and some data:

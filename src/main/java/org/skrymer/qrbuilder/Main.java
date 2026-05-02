@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 public class Main {
   public static final float TRANSPARENCY = 0.20f;
@@ -27,7 +27,7 @@ public class Main {
             .and()
             .withDecorator(ImageOverlay.addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
             .and()
-            .withCharSet(Charset.forName("UTF-8"))
+            .withCharSet(StandardCharsets.UTF_8)
             .verify(true)
 
     ).toFile("./qrCode.png", "PNG");
