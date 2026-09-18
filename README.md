@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 
 import static org.skrymer.qrbuilder.decorator.ImageOverlay.*;
-import static org.skrymer.qrbuilder.decorator.ColoredQRCode.colorizeQRCode;
 
 public class Main {
   static final float TRANSPARENCY = 0.25f;
@@ -44,11 +43,11 @@ public class Main {
               .and()
             .withData("The answer is 42")
               .and()
-            .withDecorator(colorizeQRCode(Color.green.darker()))
+            .withColor(Color.green.darker())
               .and()
             .withDecorator(addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
               .and()
-            .doVerify(true)
+            .verify(true)
 
     ).toFile("./qrCode.png", "PNG");
   }
@@ -71,7 +70,9 @@ The following qrCode is then generated:
 The builder uses the decorators to decorate(obviously) the generated QRCode. 
 
 Decorators currently available:
-* ImageOverlay 
-* ColoredQRCode 
+* ImageOverlay
+
+The qrcode colour is not a decorator - set it on the builder with `withColor(Color)`,
+which colours the code as it is rendered rather than repainting it afterwards.
 
 You can create new Decorators by implementing the Decorator interface

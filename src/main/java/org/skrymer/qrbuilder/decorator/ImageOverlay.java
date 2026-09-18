@@ -16,6 +16,15 @@ public class ImageOverlay implements Decorator<BufferedImage> {
   private final Float overlayToQRCodeRatio;
   private final Float overlayTransparency;
 
+  /** The scaled overlay is a pure function of the target size, so it is worth keeping. */
+  private record ScaledOverlay(int width, int height, BufferedImage image) {}
+
+  /**
+   * Volatile rather than synchronized: a decorator can be reused across qrcodes of
+   * different sizes, and the worst a race can do is scale the same overlay twice.
+   */
+  private volatile ScaledOverlay scaledOverlay;
+
   /**
    * @param overlay - the image to be over rendered on top of the qrcode
    *
@@ -52,7 +61,10 @@ public class ImageOverlay implements Decorator<BufferedImage> {
     int deltaHeight = qrcode.getHeight() - scaledOverlay.getHeight();
     int deltaWidth  = qrcode.getWidth()  - scaledOverlay.getWidth();
 
-    var combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    // TYPE_INT_RGB, not ARGB: the composite over an opaque qrcode is itself opaque,
+    // and an alpha channel makes ImageIO.write silently fail for formats such as JPEG.
+    // The scaled overlay below keeps its alpha so transparent pixels still blend.
+    var combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_RGB);
     Graphics2D g2 = combined.createGraphics();
     g2.drawImage(qrcode, 0, 0, null);
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlayTransparency));
@@ -70,12 +82,22 @@ public class ImageOverlay implements Decorator<BufferedImage> {
     int scaledWidth = Math.round(qrcode.getWidth() * overlayToQRCodeRatio);
     int scaledHeight = Math.round(qrcode.getHeight() * overlayToQRCodeRatio);
 
+    // Keyed on the target size, not just cached: the same decorator may be handed
+    // qrcodes of different sizes, and each needs an overlay scaled to match.
+    ScaledOverlay cached = scaledOverlay;
+    if (cached != null && cached.width() == scaledWidth && cached.height() == scaledHeight) {
+      return cached.image();
+    }
+
     var scaled = new BufferedImage(scaledWidth, scaledHeight, BufferedImage.TYPE_INT_ARGB);
     Graphics2D g = scaled.createGraphics();
     g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     g.drawImage(overlay, 0, 0, scaledWidth, scaledHeight, null);
     g.dispose();
+
+    // Only ever drawn from, never drawn into, so sharing the instance is safe.
+    scaledOverlay = new ScaledOverlay(scaledWidth, scaledHeight, scaled);
 
     return scaled;
   }

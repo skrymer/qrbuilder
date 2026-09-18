@@ -1,6 +1,5 @@
 package org.skrymer.qrbuilder;
 
-import org.skrymer.qrbuilder.decorator.ColoredQRCode;
 import org.skrymer.qrbuilder.decorator.ImageOverlay;
 
 import javax.imageio.ImageIO;
@@ -23,7 +22,7 @@ public class Main {
             .and()
             .withData("One day, lad, all this will be yours. What, the curtains?")
             .and()
-            .withDecorator(ColoredQRCode.colorizeQRCode(Color.green.darker()))
+            .withColor(Color.green.darker())
             .and()
             .withDecorator(ImageOverlay.addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
             .and()
