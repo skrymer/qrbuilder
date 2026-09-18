@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -40,6 +41,7 @@ public class QRCode {
   private Color color;
 
   private QRCode(ZXingBuilder builder) {
+    validateSize(builder.width, builder.height);
     data = builder.data;
     verify = builder.verify;
     width = builder.width;
@@ -73,6 +75,20 @@ public class QRCode {
 // private methods
 //--------------------
 
+  /**
+   * Checked when the qrcode is built rather than when the size is set, so that
+   * never calling withSize is an error instead of a natural size thumbnail.
+   */
+  private static void validateSize(int width, int height) {
+    if (width <= 0) {
+      throw new InvalidSizeException("Width is to small should be > 0 is " + width);
+    }
+
+    if (height <= 0) {
+      throw new InvalidSizeException("Height is to small should be > 0 is " + height);
+    }
+  }
+
   private void verifyQRCode(BufferedImage qrCode) {
     if (!verify) {
       return;
@@ -100,10 +116,23 @@ public class QRCode {
   private BufferedImage encode() {
     try {
       BitMatrix matrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, this.width, this.height, getEncodeHints());
+
+      // The encoder treats the requested size as a minimum and quietly enlarges it when
+      // the payload needs more modules, so a caller sizing into a fixed slot would get a
+      // bigger image than it asked for with no way to notice. Say so instead.
+      if (matrix.getWidth() != this.width || matrix.getHeight() != this.height) {
+        throw new InvalidSizeException(
+            "Requested " + this.width + "x" + this.height + " but this payload needs at least "
+                + matrix.getWidth() + "x" + matrix.getHeight());
+      }
+
       // Colouring here costs nothing: the matrix has to be turned into pixels either
       // way, so there is no second pass over the image to recolour it afterwards.
       return MatrixToImageWriter.toBufferedImage(matrix,
           new MatrixToImageConfig(this.color.getRGB(), MatrixToImageConfig.WHITE));
+    } catch (InvalidSizeException e) {
+      // A size the caller can act on, not a failure to encode - do not bury it.
+      throw e;
     } catch (Exception e) {
       throw new CouldNotCreateQRCodeException("QRCode could not be generated", e);
     }
@@ -145,7 +174,11 @@ public class QRCode {
 
     private ZXingBuilder(){
       verify = true;
-      charSet = Charset.defaultCharset();
+      // Pinned rather than Charset.defaultCharset(): JEP 400 changed what that means
+      // between Java 11 and 18, so the same payload encoded to different bytes depending
+      // on the platform, and verify() cannot see the drift because it decodes with the
+      // same charset it encoded with.
+      charSet = StandardCharsets.UTF_8;
       color = Color.BLACK;
       decorators = new ArrayList<>();
     }
@@ -171,7 +204,6 @@ public class QRCode {
     }
 
     public ZXingBuilder withSize(Integer width, Integer height) {
-      validateSize(width, height);
       this.width = width;
       this.height = height;
       return this;
@@ -194,23 +226,15 @@ public class QRCode {
     }
 
     /**
-     * Defaults to the jvm default char set
-     * @param charSet
-     * @return
+     * The character set the payload is encoded with. Defaults to UTF-8.
+     *
+     * @param charSet the char set
+     * @return this
      */
     public ZXingBuilder withCharSet(Charset charSet){
       this.charSet = charSet;
       return this;
     }
 
-    private void validateSize(Integer width, Integer height) {
-      if (width <= 0) {
-        throw new InvalidSizeException("Width is to small should be > 0 is " + width);
-      }
-
-      if (height <= 0) {
-        throw new InvalidSizeException("Height is to small should be > 0 is " + height);
-      }
-    }
   }
 }

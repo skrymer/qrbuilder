@@ -1,12 +1,20 @@
 name: build
 
 on:
+  # Only master on push: every other branch is covered by its pull request, and
+  # listening to both ran the whole suite twice for each push to an open PR.
   push:
+    branches: [master]
   pull_request:
+
+# mvn verify downloads and executes third party plugin code, so give it nothing to spend.
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -19,3 +27,13 @@ jobs:
 
       - name: Build and test
         run: mvn -B verify
+
+      # Without this a failure leaves only the log tail, which is not enough to
+      # tell which assertion went and why.
+      - name: Upload test reports
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: surefire-reports
+          path: target/surefire-reports/
+          retention-days: 7
