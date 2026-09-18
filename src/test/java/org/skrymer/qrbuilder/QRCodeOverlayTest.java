@@ -125,6 +125,26 @@ public class QRCodeOverlayTest {
     ).toImage();
   }
 
+  @Test
+  public void whenOverlayHasTransparentPixels_thenTheQRCodeShowsThroughThem() throws Exception {
+    // Pre Java 25 the overlay was scaled onto a black background, so transparent
+    // pixels were painted black and obscured more of the code than they needed to.
+    BufferedImage overlay = TestHelpers.centredBlockOnTransparent(80, 40, Color.BLUE);
+
+    BufferedImage qrcode = QRCode.ZXingBuilder.build(builder ->
+        builder.withSize(400, 400)
+            .and()
+            .withData("and time began with a bang")
+            .and()
+            .withColor(Color.RED)
+            .verify(false)
+            .withDecorator(ImageOverlay.addImageOverlay(overlay, 1.0f, 0.25f))
+    ).toImage();
+
+    Assert.assertFalse(TestHelpers.distinctColours(qrcode).contains(Color.BLACK.getRGB()),
+        "Transparent overlay pixels should let the qrcode through, not be flattened onto black");
+  }
+
   private BufferedImage getOverlay()  {
     try {
       return ImageIO.read(new File("src/test/resources/images/skull_bw.png"));

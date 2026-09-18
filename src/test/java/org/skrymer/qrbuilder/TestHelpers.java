@@ -72,4 +72,16 @@ public class TestHelpers {
     g.dispose();
     return image;
   }
+
+  /**
+   * A transparent image with a smaller opaque block of colour at its centre.
+   */
+  public static BufferedImage centredBlockOnTransparent(int size, int blockSize, Color colour) {
+    BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = image.createGraphics();
+    g.setColor(colour);
+    g.fillRect((size - blockSize) / 2, (size - blockSize) / 2, blockSize, blockSize);
+    g.dispose();
+    return image;
+  }
 }
