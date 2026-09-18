@@ -36,7 +36,9 @@ public class ColoredQRCode implements Decorator<BufferedImage> {
     int blackRgb = Color.black.getRGB();
     int targetRgb = color.getRGB();
 
-    var colored = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+    // TYPE_INT_RGB, not ARGB: the QR code is opaque, and an alpha channel makes
+    // ImageIO.write silently fail for formats that cannot carry one, such as JPEG.
+    var colored = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     for (int y = 0; y < height; y++) {
       for (int x = 0; x < width; x++) {
         int rgb = qrcode.getRGB(x, y);

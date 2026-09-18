@@ -52,7 +52,10 @@ public class ImageOverlay implements Decorator<BufferedImage> {
     int deltaHeight = qrcode.getHeight() - scaledOverlay.getHeight();
     int deltaWidth  = qrcode.getWidth()  - scaledOverlay.getWidth();
 
-    var combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_ARGB);
+    // TYPE_INT_RGB, not ARGB: the composite over an opaque qrcode is itself opaque,
+    // and an alpha channel makes ImageIO.write silently fail for formats such as JPEG.
+    // The scaled overlay below keeps its alpha so transparent pixels still blend.
+    var combined = new BufferedImage(qrcode.getWidth(), qrcode.getHeight(), BufferedImage.TYPE_INT_RGB);
     Graphics2D g2 = combined.createGraphics();
     g2.drawImage(qrcode, 0, 0, null);
     g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, overlayTransparency));
