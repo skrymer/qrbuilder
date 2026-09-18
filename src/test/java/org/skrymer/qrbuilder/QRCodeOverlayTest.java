@@ -3,10 +3,7 @@ package org.skrymer.qrbuilder;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
-
-import javax.imageio.ImageIO;
 
 import org.skrymer.qrbuilder.decorator.Decorator;
 import org.skrymer.qrbuilder.decorator.ImageOverlay;
@@ -146,10 +143,6 @@ public class QRCodeOverlayTest {
   }
 
   private BufferedImage getOverlay()  {
-    try {
-      return ImageIO.read(new File("src/test/resources/images/skull_bw.png"));
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+    return Main.readImage("/images/skull_bw.png");
   }
 }

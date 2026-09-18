@@ -14,6 +14,12 @@ QRCodeBuilder
 mvn package
 ```
 
+This also produces a runnable demo:
+
+```
+java -jar target/qrbuilder-0.1.jar
+```
+
 ## Usage
 
 The builder is very simple to use, as the following example will shows.
@@ -26,8 +32,8 @@ package org.skrymer.qrbuilder;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import static org.skrymer.qrbuilder.decorator.ImageOverlay.*;
 
@@ -45,16 +51,16 @@ public class Main {
               .and()
             .withColor(Color.green.darker())
               .and()
-            .withDecorator(addImageOverlay(readImage("src/test/resources/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
+            .withDecorator(addImageOverlay(readImage("/images/skull_bw.png"), TRANSPARENCY, OVERLAY_RATIO))
               .and()
             .verify(true)
 
     ).toFile("./qrCode.png", "PNG");
   }
 
-  static BufferedImage readImage(String path) {
-    try {
-      return ImageIO.read(new File(path));
+  static BufferedImage readImage(String resource) {
+    try (InputStream in = Main.class.getResourceAsStream(resource)) {
+      return ImageIO.read(in);
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -74,5 +80,12 @@ Decorators currently available:
 
 The qrcode colour is not a decorator - set it on the builder with `withColor(Color)`,
 which colours the code as it is rendered rather than repainting it afterwards.
+
+## Sizing
+
+`withSize(width, height)` is required, and the size you ask for is the size you get.
+A payload that needs more modules than the requested size can hold throws
+`InvalidSizeException` naming the minimum, rather than quietly returning a larger
+image than you asked for.
 
 You can create new Decorators by implementing the Decorator interface
