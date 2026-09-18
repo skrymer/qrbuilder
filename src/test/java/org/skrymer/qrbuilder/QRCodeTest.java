@@ -60,4 +60,31 @@ public class QRCodeTest {
          builder.withSize(1, 0)
     ).toImage();
   }
+
+  @Test
+  public void whenFileNameIsEmpty_thenExceptionNamesTheOffendingParameter() {
+    QRCode qrCode = QRCode.ZXingBuilder.build(builder ->
+        builder.withSize(100, 100)
+            .and()
+            .withData("the answer to everything is 42")
+    );
+
+    IllegalArgumentException thrown = Assert.expectThrows(IllegalArgumentException.class,
+        () -> qrCode.toFile("", "png"));
+
+    assertEquals(thrown.getMessage(), "Parameter fileName cannot be empty");
+  }
+  @Test
+  public void whenFileFormatIsNull_thenExceptionNamesTheOffendingParameter() {
+    QRCode qrCode = QRCode.ZXingBuilder.build(builder ->
+        builder.withSize(100, 100)
+            .and()
+            .withData("the answer to everything is 42")
+    );
+
+    IllegalArgumentException thrown = Assert.expectThrows(IllegalArgumentException.class,
+        () -> qrCode.toFile("qrcode.png", null));
+
+    assertEquals(thrown.getMessage(), "Parameter fileFormat cannot be empty");
+  }
 }
