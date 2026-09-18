@@ -1,5 +1,6 @@
 package org.skrymer.qrbuilder;
 
+import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.util.function.Consumer;
 
 import com.google.zxing.*;
 import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.common.HybridBinarizer;
@@ -35,6 +37,7 @@ public class QRCode {
   private int width, height;
   private List<Decorator<BufferedImage>> decorators;
   private Charset charSet;
+  private Color color;
 
   private QRCode(ZXingBuilder builder) {
     data = builder.data;
@@ -43,6 +46,7 @@ public class QRCode {
     height = builder.height;
     decorators = builder.decorators;
     charSet = builder.charSet;
+    color = builder.color;
   }
 
   public BufferedImage toImage() throws CouldNotCreateQRCodeException, UnreadableDataException {
@@ -96,7 +100,10 @@ public class QRCode {
   private BufferedImage encode() {
     try {
       BitMatrix matrix = new QRCodeWriter().encode(data, BarcodeFormat.QR_CODE, this.width, this.height, getEncodeHints());
-      return MatrixToImageWriter.toBufferedImage(matrix);
+      // Colouring here costs nothing: the matrix has to be turned into pixels either
+      // way, so there is no second pass over the image to recolour it afterwards.
+      return MatrixToImageWriter.toBufferedImage(matrix,
+          new MatrixToImageConfig(this.color.getRGB(), MatrixToImageConfig.WHITE));
     } catch (Exception e) {
       throw new CouldNotCreateQRCodeException("QRCode could not be generated", e);
     }
@@ -133,11 +140,13 @@ public class QRCode {
     private boolean verify;
     private int width, height;
     private Charset charSet;
+    private Color color;
     private List<Decorator<BufferedImage>> decorators;
 
     private ZXingBuilder(){
       verify = true;
       charSet = Charset.defaultCharset();
+      color = Color.BLACK;
       decorators = new ArrayList<>();
     }
 
@@ -165,6 +174,17 @@ public class QRCode {
       validateSize(width, height);
       this.width = width;
       this.height = height;
+      return this;
+    }
+
+    /**
+     * The colour of the qrcode's dark modules. Defaults to black.
+     *
+     * @param color the color
+     * @return this
+     */
+    public ZXingBuilder withColor(Color color) {
+      this.color = color;
       return this;
     }
 
