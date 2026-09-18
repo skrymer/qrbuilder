@@ -8,6 +8,7 @@ import java.nio.file.Files;
 
 import javax.imageio.ImageIO;
 
+import org.skrymer.qrbuilder.decorator.Decorator;
 import org.skrymer.qrbuilder.decorator.ImageOverlay;
 import org.skrymer.qrbuilder.exception.UnreadableDataException;
 import org.testng.Assert;
@@ -97,6 +98,31 @@ public class QRCodeOverlayTest {
     Color centre = new Color(qrcode.getRGB(200, 200));
     Assert.assertTrue(centre.getBlue() > centre.getRed() && centre.getBlue() > centre.getGreen(),
         "Expected the centre to be tinted towards the overlay colour but it is " + centre);
+  }
+
+  @Test
+  public void whenOneDecoratorIsUsedForDifferentSizes_thenEachOverlayMatchesItsQRCode() throws Exception {
+    Decorator<BufferedImage> decorator =
+        ImageOverlay.addImageOverlay(TestHelpers.solidImage(80, 80, Color.BLUE), 1.0f, 0.25f);
+
+    BufferedImage small = buildWith(decorator, 400);
+    BufferedImage large = buildWith(decorator, 800);
+
+    Assert.assertEquals(TestHelpers.boundingBoxOf(small, Color.BLUE.getRGB()),
+        new int[] {150, 150, 249, 249});
+    Assert.assertEquals(TestHelpers.boundingBoxOf(large, Color.BLUE.getRGB()),
+        new int[] {300, 300, 499, 499});
+  }
+
+  private BufferedImage buildWith(Decorator<BufferedImage> decorator, int size) {
+    return QRCode.ZXingBuilder.build(builder ->
+        builder.withSize(size, size)
+            .and()
+            .withData("and time began with a bang")
+            .and()
+            .verify(false)
+            .withDecorator(decorator)
+    ).toImage();
   }
 
   private BufferedImage getOverlay()  {
